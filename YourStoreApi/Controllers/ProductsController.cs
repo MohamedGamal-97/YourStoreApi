@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YourStoreApi.Context;
 using YourStoreApi.Models;
+using YourStoreApi.Services;
 
 namespace YourStoreApi.Controllers
 {
@@ -15,25 +16,26 @@ namespace YourStoreApi.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly StoreContext _context;
+        private readonly IProductRepository _repo;
 
-        public ProductsController(StoreContext context)
+        public ProductsController(IProductRepository repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.ToListAsync();
+            var products = await _repo.GetAllProducts();
+            return Ok(products);
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _repo.GetProductById(id);
 
             if (product == null)
             {
@@ -43,6 +45,7 @@ namespace YourStoreApi.Controllers
             return product;
         }
 
+        /*
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -105,5 +108,6 @@ namespace YourStoreApi.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+        */
     }
 }
