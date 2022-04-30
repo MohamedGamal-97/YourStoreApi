@@ -6,5 +6,8 @@ namespace YourStoreApi.Services
     {
         Task<IReadOnlyList<Product>> GetAllProducts();
         Task<Product> GetProductById(int id);
+        Task<IReadOnlyList<ProductBrand>> GetProductBrands();
+        Task<IReadOnlyList<ProductType>> GetProductTypes();
+
     }
 }

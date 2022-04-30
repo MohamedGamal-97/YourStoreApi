@@ -17,9 +17,19 @@ namespace YourStoreApi.Services
             return await _context.Products.ToListAsync();
         }
 
+        public async Task<IReadOnlyList<ProductBrand>> GetProductBrands()
+        {
+            return await _context.ProductBrands.ToListAsync();
+        }
+
         public async Task<Product> GetProductById(int id)
         {
             return await _context.Products.FindAsync(id);
+        }
+
+        public async Task<IReadOnlyList<ProductType>> GetProductTypes()
+        {
+            return await _context.ProductTypes.ToListAsync();
         }
     }
 }
