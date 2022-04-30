@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using YourStoreApi.Context;
+using YourStoreApi.Models;
 using YourStoreApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 
@@ -15,6 +18,10 @@ builder.Services.AddDbContext<StoreContext>(x => x.UseSqlServer(builder.Configur
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
+
+//var host = WebApplication.CreateBuilder(args).Build();
+
+//host.Run();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -29,4 +36,21 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+//app.Run();
+using var scope = app.Services.CreateScope();
+
+    var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+    try
+    {
+        var context = services.GetRequiredService<StoreContext>();
+        await context.Database.MigrateAsync();
+        await StoreContextSeed.SeedAsync(context, loggerFactory);
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "An error occured during migration");
+    }
+
+await app.RunAsync();
