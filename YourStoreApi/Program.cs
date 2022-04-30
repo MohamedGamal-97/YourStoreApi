@@ -19,9 +19,6 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 
-//var host = WebApplication.CreateBuilder(args).Build();
-
-//host.Run();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
