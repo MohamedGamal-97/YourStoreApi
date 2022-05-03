@@ -8,15 +8,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YourStoreApi.Context;
+using YourStoreApi.Errors;
 using YourStoreApi.Models;
 using YourStoreApi.Models.Dto;
 using YourStoreApi.Services;
 
 namespace YourStoreApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProductsController : ControllerBase
+    
+    public class ProductsController : BaseApiController
     {
         private readonly IGenericRepository<Product> _productsRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandsRepo;
@@ -49,6 +49,8 @@ namespace YourStoreApi.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
@@ -56,7 +58,7 @@ namespace YourStoreApi.Controllers
 
             if (product == null)
             {
-                return NotFound();
+                return NotFound(new ApiResponse(404));
             }
 
             //return product;
